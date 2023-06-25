@@ -51,9 +51,9 @@ func main() {
 			"devices": map[string]interface{} {
 				"create": map[string]interface{} {
 					"reusable": false,
-					"ephemeral": false,
+					"ephemeral": true,
 					"preauthorized": false,
-					"tags": []string{"tag:example"},
+					"tags": []string{"tag:prod"},
 				},
 			},
 		},
