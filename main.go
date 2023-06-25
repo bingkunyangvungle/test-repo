@@ -19,7 +19,7 @@ func main() {
 
         client := oauthConfig.Client(context.Background())
         // Replace example.com with your tailnet name.
-        resp, err := client.Get("https://api.tailscale.com/api/v2/tailnet/example.com/devices")
+        resp, err := client.Get("https://api.tailscale.com/api/v2/tailnet/vungle.com/devices")
         if err != nil {
                 log.Fatalf("error getting keys: %v", err)
         }

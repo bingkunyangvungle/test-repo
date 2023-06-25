@@ -6,27 +6,12 @@ jobs:
     runs-on: ubuntu-latest
     container: golang:1.19
     steps:
+      env:
+        OAUTH_CLIENT_ID: ${{ secrets.TAILSCALE_OAUTH_CLIENT_ID }}
+        OAUTH_CLIENT_SECRET: ${{ secrets.TAILSCALE_OAUTH_CLIENT_SECRET }}
+        
       - name: Checkout
         uses: actions/checkout@v3
-
-      # - name: Get cache paths
-      #   id: cache
-      #   run: |
-      #     echo "build=$(go env GOCACHE)" | tee -a $GITHUB_OUTPUT
-      #     echo "module=$(go env GOMODCACHE)" | tee -a $GITHUB_OUTPUT
-
-      # - name: Set up cache
-      #   uses: actions/cache@v2
-      #   with:
-      #     path: |
-      #       ${{ steps.cache.outputs.build }}
-      #       ${{ steps.cache.outputs.module }}
-      #     key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-go-
-
-      # - name: Run tests
-      #   run: go test -race ./...
       
       - uses: actions/setup-go@v4
         with:
