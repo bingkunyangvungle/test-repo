@@ -11,6 +11,8 @@ jobs:
         uses: actions/setup-go@v4
         with:
           go-version: '1.16.x'
+      - name: Init
+        run: go mod init    
       - name: Install dependencies
         run: go get .
       - name: Build
