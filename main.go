@@ -6,7 +6,8 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
-
+	"encoding/json"
+	"bytes"
 	"golang.org/x/oauth2/clientcredentials"
 )
 
@@ -32,16 +33,51 @@ func main() {
 	// fmt.Printf("response: %s", string(body))
 	
 	// Call api to get all the keys
-	get_keys_resp, get_keys_err := client.Get("https://api.tailscale.com/api/v2/tailnet/vungle.com/keys")
-	if get_keys_err != nil {
-		log.Fatalf("error getting keys: %v", get_keys_err)
+	getKeys_Resp, getKeysErr := client.Get("https://api.tailscale.com/api/v2/tailnet/vungle.com/keys")
+	if getKeysErr != nil {
+		log.Fatalf("error getting keys: %v", getKeysErr)
 	}
 
-	get_keys_body, get_keys_err := ioutil.ReadAll(get_keys_resp.Body)
-	if get_keys_err != nil {
-		log.Fatalf("error reading response body: %v", get_keys_err)
+	getKeysBody, getKeysErr := ioutil.ReadAll(getKeys_Resp.Body)
+	if getKeysErr != nil {
+		log.Fatalf("error reading response body: %v", getKeysErr)
 	}
 	
-	fmt.Printf("get_keys_body response: %s", string(get_keys_body))	
+	fmt.Printf("get_keys_body response: %s", string(getKeysBody))	
+	
+	// Call api to create the key /api/v2/tailnet/{tailnet}/keys
+	data := map[string]interface{}{
+		"capabilities": map[string]interface{} {
+			"devices": map[string]interface{} {
+				"create": map[string]interface{} {
+					"reusable": false,
+					"ephemeral": false,
+					"preauthorized": false,
+					"tags": []string{"tag:example"},
+				},
+			},
+		},
+		"expirySeconds": 3600,
+		"description": "short description of key purpose",
+	}	
+
+	jsonData, formatErr := json.Marshal(data)
+	if formatErr != nil {
+		log.Fatalf("error creating body: %v", formatErr)
+	}
+	
+	reqBody := bytes.NewBuffer(jsonData)
+
+	createKeysResp, createKeysErr := client.Post("https://api.tailscale.com/api/v2/tailnet/vungle.com/keys", "application/json", reqBody)
+	if getKeysErr != nil {
+		log.Fatalf("error creating keys: %v", createKeysErr)
+	}
+
+	createKeysBody, createKeysErr := ioutil.ReadAll(createKeysResp.Body)
+	if getKeysErr != nil {
+		log.Fatalf("error reading response body: %v", createKeysErr)
+	}
+	
+	fmt.Printf("create_keys_body response: %s", string(createKeysBody))		
 	
 }
