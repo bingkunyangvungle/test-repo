@@ -9,8 +9,11 @@ jobs:
       - name: set env
         run: |
           echo "OAUTH_CLIENT_ID=${{ secrets.TAILSCALE_OAUTH_CLIENT_ID }}" >> $GITHUB_ENV
-          echo "OAUTH_CLIENT_SECRET=${{ secrets.TAILSCALE_OAUTH_CLIENT_SECRET }}" >> $GITHUB_ENV
-          
+          echo "OAUTH_CLIENT_SECRET=${{ secrets.TAILSCALE_OAUTH_CLIENT_SECRET }}" >> $GITHUB_ENV    
+        
+      - name: Checkout
+        uses: actions/checkout@v3
+        
       - name: Assume github action role
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -34,10 +37,7 @@ jobs:
           role-skip-session-tagging: true
           # role duration need <= the default when creating role
           role-duration-seconds: 3600
-          aws-region: us-east-1          
-        
-      - name: Checkout
-        uses: actions/checkout@v3
+          aws-region: us-east-1              
       
       - uses: actions/setup-go@v4
         with:
