@@ -14,7 +14,7 @@ jobs:
       - name: Assume github action role
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          role-to-assume: "arn:aws:iam::320005014399:role/vault-prod"
+          role-to-assume: "arn:aws:iam::320005014399:role/github-action"
           aws-region: us-east-1          
           
       # should output the ARN of your instance role, if it's now being used
@@ -22,19 +22,19 @@ jobs:
         shell: bash
         run: aws sts get-caller-identity          
           
-      # - name: Assume packer role
-      #   uses: aws-actions/configure-aws-credentials@v1
-      #   with:
-      #     ### IMPORTANT: must pass over these three, otherwise doesn't work
-      #     aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
-      #     aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
-      #     aws-session-token: ${{ env.AWS_SESSION_TOKEN }}
-      #     role-to-assume: "arn:aws:iam::320005014399:role/packer"
-      #     # Need to disable since the parent role doesn't have permissions to tag
-      #     role-skip-session-tagging: true
-      #     # role duration need <= the default when creating role
-      #     role-duration-seconds: 3600
-      #     aws-region: us-east-1          
+      - name: Assume packer role
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          ### IMPORTANT: must pass over these three, otherwise doesn't work
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ env.AWS_SESSION_TOKEN }}
+          role-to-assume: "arn:aws:iam::320005014399:role/vault-prod"
+          # Need to disable since the parent role doesn't have permissions to tag
+          role-skip-session-tagging: true
+          # role duration need <= the default when creating role
+          role-duration-seconds: 3600
+          aws-region: us-east-1          
         
       - name: Checkout
         uses: actions/checkout@v3
