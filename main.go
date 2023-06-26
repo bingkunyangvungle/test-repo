@@ -35,12 +35,12 @@ func main() {
 	// fmt.Printf("response: %s", string(body))
 	
 	// Call api to get all the keys
-	getKeys_Resp, getKeysErr := client.Get("https://api.tailscale.com/api/v2/tailnet/vungle.com/keys")
+	getKeysResp, getKeysErr := client.Get("https://api.tailscale.com/api/v2/tailnet/vungle.com/keys")
 	if getKeysErr != nil {
 		log.Fatalf("error getting keys: %v", getKeysErr)
 	}
 
-	getKeysBody, getKeysErr := ioutil.ReadAll(getKeys_Resp.Body)
+	getKeysBody, getKeysErr := ioutil.ReadAll(getKeysResp.Body)
 	if getKeysErr != nil {
 		log.Fatalf("error reading response body: %v", getKeysErr)
 	}
@@ -97,7 +97,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("unable to initialize AWS auth method: %s", err)
 	}
-
+	
 	authInfo, err := vaultClient.Auth().Login(context.Background(), awsAuth)
 	if err != nil {
 		log.Fatalf("unable to login to AWS auth method: %s", err)
