@@ -107,7 +107,7 @@ func main() {
 	}
 
 	// get secret from the default mount path for KV v2 in dev mode, "secret"
-	secret, err := vaultClient.KVv2("secret").Get(context.Background(), "ops")
+	secret, err := vaultClient.KVv2("secret").Get(context.Background(), "ops/github")
 	if err != nil {
 		log.Fatalf("unable to read secret: %s", err)
 	}
