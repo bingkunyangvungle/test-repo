@@ -105,8 +105,21 @@ func main() {
 	if authInfo == nil {
 		log.Fatalf("no auth info was returned after login:")
 	}
+	
+	// Create secret
+	putSecretData := map[string]interface{}{
+		"bingkun_password": "Hashi123",
+	}	
+	
+	// Write a secret
+	_, err = vaultClient.KVv2("ops").Put(context.Background(), "github", putSecretData)
+	if err != nil {
+		log.Fatalf("unable to write secret: %v", err)
+	}
 
-	// get secret from the default mount path for KV v2 in dev mode, "secret"
+	fmt.Println("Secret written successfully.")	
+	
+	// get secret from the default mount path for KV v2 in dev mode, "ops"
 	secret, err := vaultClient.KVv2("ops").Get(context.Background(), "github")
 	if err != nil {
 		log.Fatalf("unable to read secret: %s", err)
@@ -114,12 +127,11 @@ func main() {
 
 	// data map can contain more than one key-value pair,
 	// in this case we're just grabbing one of them
-	value, ok := secret.Data["test_password"].(string)
+	value, ok := secret.Data["bingkun_password"].(string)
 	if !ok {
-		log.Fatalf("value type assertion failed: %T %#v", secret.Data["test_password"], secret.Data["test_password"])
+		log.Fatalf("value type assertion failed: %T %#v", secret.Data["bingkun_password"], secret.Data["bingkun_password"])
 	}	
-	fmt.Printf("value response: %s", value)	
-	
+	fmt.Printf("value response: %s", value)		
 	
 	// Use token to do
 	// vaultClient, err := vault.NewClient(config)
