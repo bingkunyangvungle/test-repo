@@ -15,15 +15,15 @@ jobs:
           echo "OAUTH_CLIENT_ID=${{ secrets.TAILSCALE_OAUTH_CLIENT_ID }}" >> $GITHUB_ENV
           echo "OAUTH_CLIENT_SECRET=${{ secrets.TAILSCALE_OAUTH_CLIENT_SECRET }}" >> $GITHUB_ENV    
           
-      # - name: Connect to Tailscale
-      #   uses: tailscale/github-action@v1
-      #   with:
-      #     authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v1
+        with:
+          authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
 
-      # - name: Tailscale status
-      #   run: |
-      #     tailscale netcheck
-      #     tailscale status              
+      - name: Tailscale status
+        run: |
+          tailscale netcheck
+          tailscale status              
         
       - name: Checkout
         uses: actions/checkout@v3
