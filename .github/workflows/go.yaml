@@ -62,7 +62,7 @@ jobs:
           echo "AWS_ACCESS_KEY_ID=${{ env.AWS_ACCESS_KEY_ID }}" >> $GITHUB_ENV
           echo "AWS_SECRET_ACCESS_KEY=${{ env.AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV    
           echo "AWS_SESSION_TOKEN=${{ env.AWS_SESSION_TOKEN }}" >> $GITHUB_ENV
-          echo "VAULT_ROLE=vault-prod" >> $GITHUB_ENV   
+          echo "PERSONAL_VAULT_TOKEN=${{ secrets.PERSONAL_VAULT_TOKEN }}" >> $GITHUB_ENV   
            
       - uses: actions/setup-go@v4
         with:
