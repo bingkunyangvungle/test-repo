@@ -85,6 +85,7 @@ func main() {
 	// Section to call Vault api
 	// getSecretWithAWSAuthIAM()
 	config := vault.DefaultConfig() // modify for more granular configuration
+	config.Address = "https://vault.ops.vungle.io"
 
 	vaultClient, vaultErr := vault.NewClient(config)
 	if vaultErr != nil {
