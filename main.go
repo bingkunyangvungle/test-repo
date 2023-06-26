@@ -6,9 +6,11 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
-	"encoding/json"
-	"bytes"
+	// "encoding/json"
+	// "bytes"
 	"golang.org/x/oauth2/clientcredentials"
+	vault "github.com/hashicorp/vault/api"
+	auth "github.com/hashicorp/vault/api/auth/aws"
 )
 
 func main() {
@@ -46,38 +48,80 @@ func main() {
 	fmt.Printf("get_keys_body response: %s", string(getKeysBody))	
 	
 	// Call api to create the key /api/v2/tailnet/{tailnet}/keys
-	data := map[string]interface{}{
-		"capabilities": map[string]interface{} {
-			"devices": map[string]interface{} {
-				"create": map[string]interface{} {
-					"reusable": false,
-					"ephemeral": true,
-					"preauthorized": false,
-					"tags": []string{"tag:prod"},
-				},
-			},
-		},
-		"expirySeconds": 3600,
-		"description": "short description of key purpose",
-	}	
+	// data := map[string]interface{}{
+	// 	"capabilities": map[string]interface{} {
+	// 		"devices": map[string]interface{} {
+	// 			"create": map[string]interface{} {
+	// 				"reusable": false,
+	// 				"ephemeral": true,
+	// 				"preauthorized": false,
+	// 				"tags": []string{"tag:prod"},
+	// 			},
+	// 		},
+	// 	},
+	// 	"expirySeconds": 3600,
+	// 	"description": "short description of key purpose",
+	// }	
 
-	jsonData, formatErr := json.Marshal(data)
-	if formatErr != nil {
-		log.Fatalf("error creating body: %v", formatErr)
-	}
+	// jsonData, formatErr := json.Marshal(data)
+	// if formatErr != nil {
+	// 	log.Fatalf("error creating body: %v", formatErr)
+	// }
 	
-	reqBody := bytes.NewBuffer(jsonData)
+	// reqBody := bytes.NewBuffer(jsonData)
 
-	createKeysResp, createKeysErr := client.Post("https://api.tailscale.com/api/v2/tailnet/vungle.com/keys", "application/json", reqBody)
-	if getKeysErr != nil {
-		log.Fatalf("error creating keys: %v", createKeysErr)
+	// createKeysResp, createKeysErr := client.Post("https://api.tailscale.com/api/v2/tailnet/vungle.com/keys", "application/json", reqBody)
+	// if getKeysErr != nil {
+	// 	log.Fatalf("error creating keys: %v", createKeysErr)
+	// }
+
+	// createKeysBody, createKeysErr := ioutil.ReadAll(createKeysResp.Body)
+	// if getKeysErr != nil {
+	// 	log.Fatalf("error reading response body: %v", createKeysErr)
+	// }
+	
+	// fmt.Printf("create_keys_body response: %s", string(createKeysBody))		
+	
+	// Section to call Vault api
+	getSecretWithAWSAuthIAM()
+	
+}
+
+func getSecretWithAWSAuthIAM() (string, error) {
+	config := vault.DefaultConfig() // modify for more granular configuration
+
+	client, err := vault.NewClient(config)
+	if err != nil {
+		return "", fmt.Errorf("unable to initialize Vault client: %w", err)
 	}
 
-	createKeysBody, createKeysErr := ioutil.ReadAll(createKeysResp.Body)
-	if getKeysErr != nil {
-		log.Fatalf("error reading response body: %v", createKeysErr)
+	awsAuth, err := auth.NewAWSAuth(
+		auth.WithRole("vault-prod"), // if not provided, Vault will fall back on looking for a role with the IAM role name if you're using the iam auth type, or the EC2 instance's AMI id if using the ec2 auth type
+	)
+	if err != nil {
+		return "", fmt.Errorf("unable to initialize AWS auth method: %w", err)
 	}
-	
-	fmt.Printf("create_keys_body response: %s", string(createKeysBody))		
-	
+
+	authInfo, err := client.Auth().Login(context.Background(), awsAuth)
+	if err != nil {
+		return "", fmt.Errorf("unable to login to AWS auth method: %w", err)
+	}
+	if authInfo == nil {
+		return "", fmt.Errorf("no auth info was returned after login")
+	}
+
+	// get secret from the default mount path for KV v2 in dev mode, "secret"
+	secret, err := client.KVv2("secret").Get(context.Background(), "creds")
+	if err != nil {
+		return "", fmt.Errorf("unable to read secret: %w", err)
+	}
+
+	// data map can contain more than one key-value pair,
+	// in this case we're just grabbing one of them
+	value, ok := secret.Data["test_password"].(string)
+	if !ok {
+		return "", fmt.Errorf("value type assertion failed: %T %#v", secret.Data["test_password"], secret.Data["test_password"])
+	}
+
+	return value, nil
 }
