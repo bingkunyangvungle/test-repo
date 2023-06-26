@@ -14,6 +14,16 @@ jobs:
         run: |
           echo "OAUTH_CLIENT_ID=${{ secrets.TAILSCALE_OAUTH_CLIENT_ID }}" >> $GITHUB_ENV
           echo "OAUTH_CLIENT_SECRET=${{ secrets.TAILSCALE_OAUTH_CLIENT_SECRET }}" >> $GITHUB_ENV    
+          
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v1
+        with:
+          authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
+
+      - name: Tailscale status
+        run: |
+          tailscale netcheck
+          tailscale status              
         
       - name: Checkout
         uses: actions/checkout@v3
@@ -56,16 +66,6 @@ jobs:
       - uses: actions/setup-go@v4
         with:
           go-version: '1.19'
-          check-latest: true
-          
-      - name: Connect to Tailscale
-        uses: tailscale/github-action@v1
-        with:
-          authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
-
-      - name: Tailscale status
-        run: |
-          tailscale netcheck
-          tailscale status          
+          check-latest: true      
           
       - run: go run main.go      
