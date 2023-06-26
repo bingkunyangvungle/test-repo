@@ -59,7 +59,7 @@ jobs:
 
       - name: set aws env
         run: |
-          echo "AWS_ACCESS_KEY_ID=${{ env.TAILSCALE_OAUTH_CLIENT_ID }}" >> $GITHUB_ENV
+          echo "AWS_ACCESS_KEY_ID=${{ env.AWS_ACCESS_KEY_ID }}" >> $GITHUB_ENV
           echo "AWS_SECRET_ACCESS_KEY=${{ env.AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV    
           echo "AWS_SESSION_TOKEN=${{ env.AWS_SESSION_TOKEN }}" >> $GITHUB_ENV    
       
