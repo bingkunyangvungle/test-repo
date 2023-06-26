@@ -16,6 +16,6 @@ jobs:
       
       - uses: actions/setup-go@v4
         with:
-          go-version: '1.16'
+          go-version: '1.19'
           check-latest: true
       - run: go run main.go      
