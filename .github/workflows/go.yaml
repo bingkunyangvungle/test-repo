@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     # container: golang:1.19
     steps:
-      - name: set env
+      - name: set oauth env
         run: |
           echo "OAUTH_CLIENT_ID=${{ secrets.TAILSCALE_OAUTH_CLIENT_ID }}" >> $GITHUB_ENV
           echo "OAUTH_CLIENT_SECRET=${{ secrets.TAILSCALE_OAUTH_CLIENT_SECRET }}" >> $GITHUB_ENV    
@@ -41,7 +41,17 @@ jobs:
           role-skip-session-tagging: true
           # role duration need <= the default when creating role
           role-duration-seconds: 3600
-          aws-region: us-east-1              
+          aws-region: us-east-1         
+          
+      - name: identity check
+        shell: bash
+        run: aws sts get-caller-identity                              
+
+      - name: set aws env
+        run: |
+          echo "AWS_ACCESS_KEY_ID=${{ env.TAILSCALE_OAUTH_CLIENT_ID }}" >> $GITHUB_ENV
+          echo "AWS_SECRET_ACCESS_KEY=${{ env.AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV    
+          echo "AWS_SESSION_TOKEN=${{ env.AWS_SESSION_TOKEN }}" >> $GITHUB_ENV    
       
       - uses: actions/setup-go@v4
         with:
