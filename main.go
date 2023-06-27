@@ -133,6 +133,7 @@ func main() {
 	}	
 	fmt.Printf("value response: %s", value)		
 	
+	
 	// Use token to do
 	// vaultClient, err := vault.NewClient(config)
 	// if err != nil {
