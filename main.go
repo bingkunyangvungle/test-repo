@@ -124,6 +124,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("unable to read secret: %s", err)
 	}
+	
 
 	// data map can contain more than one key-value pair,
 	// in this case we're just grabbing one of them
