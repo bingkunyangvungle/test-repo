@@ -1,72 +1,90 @@
-name: Go
-on: [push]
+# name: Go
+# on: [push]
 
-permissions:
-  id-token: write
-  contents: read
+# permissions:
+#   id-token: write
+#   contents: read
 
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    # container: golang:1.19
-    steps:
-      - name: set oauth env
-        run: |
-          echo "OAUTH_CLIENT_ID=${{ secrets.TAILSCALE_OAUTH_CLIENT_ID }}" >> $GITHUB_ENV
-          echo "OAUTH_CLIENT_SECRET=${{ secrets.TAILSCALE_OAUTH_CLIENT_SECRET }}" >> $GITHUB_ENV    
+# jobs:
+#   test:
+#     runs-on: ubuntu-latest
+#     # container: golang:1.19
+#     steps:
+#       - name: set oauth env
+#         run: |
+#           echo "OAUTH_CLIENT_ID=${{ secrets.TAILSCALE_OAUTH_CLIENT_ID }}" >> $GITHUB_ENV
+#           echo "OAUTH_CLIENT_SECRET=${{ secrets.TAILSCALE_OAUTH_CLIENT_SECRET }}" >> $GITHUB_ENV    
           
-      - name: Connect to Tailscale
-        uses: tailscale/github-action@v1
-        with:
-          authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
+#       - name: Connect to Tailscale
+#         uses: tailscale/github-action@v1
+#         with:
+#           authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
 
-      - name: Tailscale status
-        run: |
-          tailscale netcheck
-          tailscale status              
+#       - name: Tailscale status
+#         run: |
+#           tailscale netcheck
+#           tailscale status              
         
-      - name: Checkout
-        uses: actions/checkout@v3
+#       - name: Checkout
+#         uses: actions/checkout@v3
         
-      - name: Assume github action role
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          role-to-assume: "arn:aws:iam::320005014399:role/github-action"
-          aws-region: us-east-1          
+#       - name: Assume github action role
+#         uses: aws-actions/configure-aws-credentials@v1
+#         with:
+#           role-to-assume: "arn:aws:iam::320005014399:role/github-action"
+#           aws-region: us-east-1          
           
-      # should output the ARN of your instance role, if it's now being used
-      - name: identity check
-        shell: bash
-        run: aws sts get-caller-identity          
+#       # should output the ARN of your instance role, if it's now being used
+#       - name: identity check
+#         shell: bash
+#         run: aws sts get-caller-identity          
           
-      - name: Assume vault-prod role
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          ### IMPORTANT: must pass over these three, otherwise doesn't work
-          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
-          aws-session-token: ${{ env.AWS_SESSION_TOKEN }}
-          role-to-assume: "arn:aws:iam::320005014399:role/vault-prod"
-          # Need to disable since the parent role doesn't have permissions to tag
-          role-skip-session-tagging: true
-          # role duration need <= the default when creating role
-          role-duration-seconds: 3600
-          aws-region: us-east-1         
+#       - name: Assume vault-prod role
+#         uses: aws-actions/configure-aws-credentials@v1
+#         with:
+#           ### IMPORTANT: must pass over these three, otherwise doesn't work
+#           aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+#           aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+#           aws-session-token: ${{ env.AWS_SESSION_TOKEN }}
+#           role-to-assume: "arn:aws:iam::320005014399:role/vault-prod"
+#           # Need to disable since the parent role doesn't have permissions to tag
+#           role-skip-session-tagging: true
+#           # role duration need <= the default when creating role
+#           role-duration-seconds: 3600
+#           aws-region: us-east-1         
           
-      - name: identity check
-        shell: bash
-        run: aws sts get-caller-identity                              
+#       - name: identity check
+#         shell: bash
+#         run: aws sts get-caller-identity                              
 
-      - name: set aws env
-        run: |
-          echo "AWS_ACCESS_KEY_ID=${{ env.AWS_ACCESS_KEY_ID }}" >> $GITHUB_ENV
-          echo "AWS_SECRET_ACCESS_KEY=${{ env.AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV    
-          echo "AWS_SESSION_TOKEN=${{ env.AWS_SESSION_TOKEN }}" >> $GITHUB_ENV
-          echo "PERSONAL_VAULT_TOKEN=${{ secrets.PERSONAL_VAULT_TOKEN }}" >> $GITHUB_ENV   
+#       - name: set aws env
+#         run: |
+#           echo "AWS_ACCESS_KEY_ID=${{ env.AWS_ACCESS_KEY_ID }}" >> $GITHUB_ENV
+#           echo "AWS_SECRET_ACCESS_KEY=${{ env.AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV    
+#           echo "AWS_SESSION_TOKEN=${{ env.AWS_SESSION_TOKEN }}" >> $GITHUB_ENV
+#           echo "PERSONAL_VAULT_TOKEN=${{ secrets.PERSONAL_VAULT_TOKEN }}" >> $GITHUB_ENV   
            
-      - uses: actions/setup-go@v4
-        with:
-          go-version: '1.19'
-          check-latest: true      
+#       - uses: actions/setup-go@v4
+#         with:
+#           go-version: '1.19'
+#           check-latest: true      
           
-      - run: go run main.go      
+#       - run: go run main.go      
+
+name: "Job to test cron job"
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+    
+jobs:
+  cronjob:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Add your desired steps here
+      - name: Run your command or script
+        run: |
+          # Your command or script here
+          echo "Running every 5 minutes"
