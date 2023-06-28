@@ -82,6 +82,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          ref: main        
 
       # Add your desired steps here
       - name: Run your command or script
