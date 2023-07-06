@@ -96,5 +96,12 @@ jobs:
       - name: Run your command or script
         run: |
           # Your command or script here
+          if [[ "${{ inputs.expiration_days }}" -lt 10 ]]; then
+            echo "Expiration day is less than 10. Throwing an error."
+            exit 1
+          else
+            echo "Expiration is greater than or equal to 10. Proceeding with the workflow."
+          fi
+                    
           echo "Running every 5 minutes"
           echo  "The tags are ${{ inputs.expiration_days }} "
