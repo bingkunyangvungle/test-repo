@@ -74,13 +74,14 @@
 name: "Job to test cron job"
 on:
   workflow_dispatch:
+    inputs:
+      expiration_days:
+        description: 'Auth key expiration days'
+        default: "10"
+        type: string  
   schedule:
     - cron: '30 10 */2 * *'
-  inputs:
-    expiration_days:
-      description: 'Auth key expiration days'
-      default: "10"
-      type: string
+
     
 jobs:
   cronjob:
