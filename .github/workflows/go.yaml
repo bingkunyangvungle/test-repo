@@ -76,6 +76,11 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '30 10 */2 * *'
+  inputs:
+    expiration_days:
+      description: 'Auth key expiration days'
+      default: "10"
+      type: string
     
 jobs:
   cronjob:
@@ -91,3 +96,4 @@ jobs:
         run: |
           # Your command or script here
           echo "Running every 5 minutes"
+          echo  "The tags are ${{ inputs.expiration_days }} "
