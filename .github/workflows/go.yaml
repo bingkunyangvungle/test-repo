@@ -72,16 +72,20 @@
 #       - run: go run main.go      
 
 name: "Job to test cron job"
-on:
-  workflow_dispatch:
-    inputs:
-      expiration_days:
-        description: 'Auth key expiration days'
-        default: "10"
-        type: string  
-  schedule:
-    - cron: '30 10 */2 * *'
+# on:
+#   workflow_dispatch:
+#     inputs:
+#       expiration_days:
+#         description: 'Auth key expiration days'
+#         default: "10"
+#         type: string  
+#   schedule:
+#     - cron: '30 10 */2 * *'
 
+on:
+  push:
+    branches:
+      - main
     
 jobs:
   cronjob:
@@ -92,16 +96,22 @@ jobs:
         with:
           ref: main        
 
-      # Add your desired steps here
-      - name: Run your command or script
-        run: |
-          # Your command or script here
-          if [[ ${{ inputs.expiration_days }} -lt 10 ]]; then
-            echo "Expiration day is less than 10. Throwing an error."
-            exit 1
-          else
-            echo "Expiration is greater than or equal to 10. Proceeding with the workflow."
-          fi
+      # # Add your desired steps here
+      # - name: Run your command or script
+      #   run: |
+      #     # Your command or script here
+      #     if [[ ${{ inputs.expiration_days }} -lt 10 ]]; then
+      #       echo "Expiration day is less than 10. Throwing an error."
+      #       exit 1
+      #     else
+      #       echo "Expiration is greater than or equal to 10. Proceeding with the workflow."
+      #     fi
                     
-          echo "Running every 5 minutes"
-          echo  "The tags are ${{ inputs.expiration_days }} "
+      #     echo "Running every 5 minutes"
+      #     echo  "The tags are ${{ inputs.expiration_days }} "
+      
+      - name: Send Slack notification
+        env:
+          SLACK_WEBHOOK_URL: "https://hooks.slack.com/services/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"
+        run: |
+          curl -X POST -H 'Content-type: application/json' --data '{"text":"This is a test notification from GitHub Actions. Just ignore it"}' $SLACK_WEBHOOK_URL      
