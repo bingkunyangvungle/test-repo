@@ -94,7 +94,7 @@ on:
         default: 90
         type: string       
   schedule:
-    - cron: '* */2 * * *'        
+    - cron: '* */5 * * *'        
     
 jobs:
   cronjob:
