@@ -117,10 +117,7 @@ jobs:
             echo "EXPIRATION_DAYS=90" >> $GITHUB_ENV
             echo "UPDATE_THRESHOLD=5" >> $GITHUB_ENV     
             echo "::set-output name=skip::skip-next-step"
-                   
-
-          
-          
+          fi  
 
       # Add your desired steps here
       - name: Run your command or script
