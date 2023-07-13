@@ -121,7 +121,7 @@ jobs:
 
       # Add your desired steps here
       - name: Run your command or script
-        if: steps.check-step.outputs.skip
+        if: steps.check-step.outputs.skip != 'skip-next-step'
         run: |
           # Your command or script here
           if [[ ${{ inputs.expiration_days }} -lt 10 ]]; then
