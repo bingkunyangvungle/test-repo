@@ -91,7 +91,7 @@ on:
     inputs:
       expiration_days:
         description: 'Set auth key expiration days'
-        default: ''
+        default: 90
         type: string       
   schedule:
     - cron: '* */5 * * *'        
