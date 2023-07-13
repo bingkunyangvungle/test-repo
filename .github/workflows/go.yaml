@@ -110,39 +110,36 @@ jobs:
       #   run: echo "::set-output name=times_input_exists::$(echo ${{ github.event.inputs.times != null }})"          
           
       - name: Define TAILSCALE_AUTHKEY expiration days(at least 10 days)
+        id: check-step
         run: |
           if [ -z "${{ inputs.expiration_days }}" ]; then
             echo "Running with scheduled job, use default value"
             echo "EXPIRATION_DAYS=90" >> $GITHUB_ENV
-            echo "UPDATE_THRESHOLD=5" >> $GITHUB_ENV            
-          elif [[ ${{ inputs.expiration_days }} -lt 10 ]]; then
+            echo "UPDATE_THRESHOLD=5" >> $GITHUB_ENV     
+            echo "::set-output name=skip::skip-next-step"
+                   
+
+          
+          
+
+      # Add your desired steps here
+      - name: Run your command or script
+        if: steps.check-step.outputs.skip
+        run: |
+          # Your command or script here
+          if [[ ${{ inputs.expiration_days }} -lt 10 ]]; then
             echo "Expiration day is less than 10. Throwing an error."
             exit 1
           else
             echo "Expiration is greater than or equal to 10. Proceeding with the workflow."
-            echo "EXPIRATION_DAYS=${{ inputs.expiration_days }}" >> $GITHUB_ENV
-            echo "UPDATE_THRESHOLD=${{ inputs.update_threshold }}" >> $GITHUB_ENV            
           fi
-          
-          
-
-      # # Add your desired steps here
-      # - name: Run your command or script
-      #   run: |
-      #     # Your command or script here
-      #     if [[ ${{ inputs.expiration_days }} -lt 10 ]]; then
-      #       echo "Expiration day is less than 10. Throwing an error."
-      #       exit 1
-      #     else
-      #       echo "Expiration is greater than or equal to 10. Proceeding with the workflow."
-      #     fi
                     
       #     echo "Running every 5 minutes"
       #     echo  "The tags are ${{ inputs.expiration_days }} "
       
-      # - name: Send Slack notification
-      #   env:
-      #     SLACK_WEBHOOK_URL: "https://hooks.slack.com/services/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"
-      #     SLACK_CHANNEL: "#grafana-pe-alerts"
-      #   run: |
-      #     curl -X POST -H 'Content-type: application/json' --data '{"text":"This is a test notification from GitHub Actions. Just ignore it"}' $SLACK_WEBHOOK_URL      
+      - name: Send Slack notification
+        env:
+          SLACK_WEBHOOK_URL: "https://hooks.slack.com/services/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"
+          SLACK_CHANNEL: "#grafana-pe-alerts"
+        run: |
+          curl -X POST -H 'Content-type: application/json' --data '{"text":"This is a test notification from GitHub Actions. Just ignore it"}' $SLACK_WEBHOOK_URL      
