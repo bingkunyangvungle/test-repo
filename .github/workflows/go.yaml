@@ -111,11 +111,11 @@ jobs:
           
       - name: Define TAILSCALE_AUTHKEY expiration days(at least 10 days)
         run: |
-          if [[ "${{ inputs.expiration_days }}" != '' ]]; then
+          if [ '${{ inputs.expiration_days }}' != '' ]; then
             echo "Running with scheduled job, use default value"
             echo "EXPIRATION_DAYS=90" >> $GITHUB_ENV
             echo "UPDATE_THRESHOLD=5" >> $GITHUB_ENV            
-          elif [[ ${{ inputs.expiration_days }} -lt 10 ]]; then
+          elif [ ${{ inputs.expiration_days }} -lt 10 ]; then
             echo "Expiration day is less than 10. Throwing an error."
             exit 1
           else
