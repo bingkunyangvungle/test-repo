@@ -83,24 +83,24 @@ name: "Job to test cron job"
 #     - cron: '30 10 */2 * *'
 
 on:
-  # push:
-  #   branches:
-  #     - main
+  push:
+    branches:
+      - main
     
-  workflow_dispatch:
-    inputs:
-      expiration_days:
-        description: 'Set auth key expiration days'
-        default: 
-        type: string       
-  schedule:
-    - cron: '* */5 * * *'        
+  # workflow_dispatch:
+  #   inputs:
+  #     expiration_days:
+  #       description: 'Set auth key expiration days'
+  #       default: 
+  #       type: string       
+  # schedule:
+  #   - cron: '* */5 * * *'        
     
 jobs:
   cronjob:
     runs-on: ubuntu-latest
     env:
-      EXPIRATION_DAYS: ${{ github.event.inputs.expiration_days || '9' }}   
+      EXPIRATION_DAYS: ${{ github.event.inputs.expiration_days || '90' }}   
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
