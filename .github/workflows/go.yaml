@@ -91,7 +91,7 @@ on:
     inputs:
       expiration_days:
         description: 'Set auth key expiration days'
-        default: 90
+        default: 
         type: string       
   schedule:
     - cron: '* */5 * * *'        
@@ -99,6 +99,8 @@ on:
 jobs:
   cronjob:
     runs-on: ubuntu-latest
+    env:
+      EXPIRATION_DAYS: ${{ github.event.inputs.expiration_days || '90' }}   
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -109,27 +111,37 @@ jobs:
       #   id: check_times_input
       #   run: echo "::set-output name=times_input_exists::$(echo ${{ github.event.inputs.times != null }})"          
           
-      - name: Define TAILSCALE_AUTHKEY expiration days(at least 10 days)
-        id: check-step
+          
+      - name: Check TAILSCALE_AUTHKEY expiration days(at least 10 days)
         run: |
-          if [ -z "${{ inputs.expiration_days }}" ]; then
-            echo "Running with scheduled job, use default value"
-            echo "EXPIRATION_DAYS=90" >> $GITHUB_ENV
-            echo "UPDATE_THRESHOLD=5" >> $GITHUB_ENV     
-            echo "::set-output name=skip::skip-next-step"
-          fi  
-
-      # Add your desired steps here
-      - name: Run your command or script
-        if: steps.check-step.outputs.skip != 'skip-next-step'
-        run: |
-          # Your command or script here
-          if [[ ${{ inputs.expiration_days }} -lt 10 ]]; then
+          if [[ $EXPIRATION_DAYS -lt 10 ]]; then
             echo "Expiration day is less than 10. Throwing an error."
             exit 1
           else
             echo "Expiration is greater than or equal to 10. Proceeding with the workflow."
-          fi
+          fi          
+          
+      # - name: Define TAILSCALE_AUTHKEY expiration days(at least 10 days)
+      #   id: check-step
+      #   run: |
+      #     if [ -z "${{ inputs.expiration_days }}" ]; then
+      #       echo "Running with scheduled job, use default value"
+      #       echo "EXPIRATION_DAYS=90" >> $GITHUB_ENV
+      #       echo "UPDATE_THRESHOLD=5" >> $GITHUB_ENV     
+      #       echo "::set-output name=skip::skip-next-step"
+      #     fi  
+
+      # Add your desired steps here
+      # - name: Run your command or script
+      #   if: steps.check-step.outputs.skip != 'skip-next-step'
+      #   run: |
+      #     # Your command or script here
+      #     if [[ ${{ inputs.expiration_days }} -lt 10 ]]; then
+      #       echo "Expiration day is less than 10. Throwing an error."
+      #       exit 1
+      #     else
+      #       echo "Expiration is greater than or equal to 10. Proceeding with the workflow."
+      #     fi
                     
       #     echo "Running every 5 minutes"
       #     echo  "The tags are ${{ inputs.expiration_days }} "
