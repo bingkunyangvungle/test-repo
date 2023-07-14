@@ -100,7 +100,7 @@ jobs:
   cronjob:
     runs-on: ubuntu-latest
     env:
-      EXPIRATION_DAYS: ${{ github.event.inputs.expiration_days || '90' }}   
+      EXPIRATION_DAYS: ${{ github.event.inputs.expiration_days || '89' }}   
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
