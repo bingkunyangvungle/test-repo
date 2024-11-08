@@ -34,9 +34,14 @@ jobs:
       # To be continue for run ANsible script  
       - name: Run Ansible playbook
         run: |
-          echo "${{ env.content }}"
-          for content in "${{ steps.get_ref.outputs.content }}"
-          do
-            echo "$content"
+          # echo "${{ env.content }}"
+          echo -e "${{ env.content }}" | while read -r line; do
+            # Use sed to extract the two parts and echo them separately
+            first_part=$(echo "$line" | sed -E 's/^([0-9]+)_.*/\1/')
+            second_part=$(echo "$line" | sed -E 's/^[0-9]+_(.*)/\1/')
+            
+            # Echo the parts separately
+            echo "First part: $first_part"
+            echo "Second part: $second_part"
           done
        
