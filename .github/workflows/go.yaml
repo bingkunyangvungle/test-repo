@@ -28,13 +28,13 @@ jobs:
           
           
           echo $file_content
-          echo "content=$file_content" >> $GITHUB_OUTPUT
+          echo "content=$file_content" >> $GITHUB_ENV
           echo 'EOF' >> $GITHUB_OUTPUT
           
       # To be continue for run ANsible script  
       - name: Run Ansible playbook
         run: |
-          echo "${{ steps.get_ref.outputs.content }}"
+          echo "${{ env.content }}"
           for content in "${{ steps.get_ref.outputs.content }}"
           do
             echo "$content"
