@@ -21,7 +21,9 @@ jobs:
             file_content+="\$line"\$'\n'  # Append line and add a newline character
           done < "\$output_file"
           
-          echo "content=\$file_content" >> $GITHUB_OUTPUT
+          echo \$file_content
+          
+          echo "content=\$output_file" >> $GITHUB_OUTPUT
           
       # To be continue for run ANsible script  
       - name: Run Ansible playbook
