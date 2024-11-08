@@ -12,13 +12,14 @@ jobs:
       - name: Echo github variables
         id: get_ref
         run: |
-          echo "brokers-dmx-prod-non-revenue-eks-2.kafka-us-east-1b.vungle.io 66" >> final_result
-          echo "brokers-dmx-prod-non-revenue-eks-3.kafka-us-east-1b.vungle.io 78" >> final_result
+          output_file="final_result"
+          echo "brokers-dmx-prod-non-revenue-eks-2.kafka-us-east-1b.vungle.io 66" >> "\$output_file"
+          echo "brokers-dmx-prod-non-revenue-eks-3.kafka-us-east-1b.vungle.io 78" >> "\$output_file"
           
           file_content=""
           while read -r line; do
             file_content+="\$line"\$'\n'  # Append line and add a newline character
-          done < "final_result"
+          done < "\$output_file"
           
           echo "content=\$file_content" >> $GITHUB_OUTPUT
           
