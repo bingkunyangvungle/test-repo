@@ -21,14 +21,14 @@ jobs:
           file_content=""
           while read -r line; do
             file_content+="$line"$'\n'  # Append line and add a newline character
+            echo "$line" >> $GITHUB_OUTPUT
           done < final_result
           
           echo $file_content
           
-          echo "content=$file_content" >> $GITHUB_OUTPUT
           
       # To be continue for run ANsible script  
       - name: Run Ansible playbook
         run: |
-          echo "${{ steps.get_ref.outputs.content }}"
+          echo "${{ steps.get_ref.outputs.* }}"
        
