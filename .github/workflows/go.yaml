@@ -12,7 +12,8 @@ jobs:
       - name: Echo github variables
         id: get_ref
         run: |
-          echo "content=brokers-dmx-prod-non-revenue-eks-2.kafka-us-east-1b.vungle.io 66" >> $GITHUB_OUTPUT
+          echo "brokers-dmx-prod-non-revenue-eks-2.kafka-us-east-1b.vungle.io 66\nbrokers-dmx-prod-non-revenue-eks-3.kafka-us-east-1b.vungle.io 78" >> final_result
+          echo "content=$(cat final_result)" >> $GITHUB_OUTPUT
           
       # To be continue for run ANsible script  
       - name: Run Ansible playbook
