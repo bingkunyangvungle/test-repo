@@ -42,7 +42,7 @@ jobs:
             if [[ -n "$first_part" ]]; then
               echo "First part: $first_part"
               echo "Second part: $second_part"
-              together="$first"+'_part_hello'+"${second}"+'_part123'
+              together="$first"'_part_hello'"$second"'_part123'
               echo "$together"
             fi
           done
