@@ -17,5 +17,5 @@ jobs:
       # To be continue for run ANsible script  
       - name: Run Ansible playbook
         run: |
-          echo "${{ steps.get_ref.outputs.* }}"
+          echo "${{ steps.get_ref.outputs.content }}"
        
