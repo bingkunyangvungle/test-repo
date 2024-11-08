@@ -19,7 +19,7 @@ jobs:
           cat final_result
           
           file_content=""
-          echo '<<EOF' >> $GITHUB_OUTPUT
+          echo 'start<<EOF' >> $GITHUB_OUTPUT
           while read -r line; do
             #new_string=$(echo "$line" | sed -E 's/.*-([0-9]+)\.kafka-us-east-1b\.vungle\.io ([0-9]{1,3})$/\1_\2/')
             modify=$(echo "$line" | sed -E 's/.*-([0-9]+)\.kafka-us-east-1b\.vungle\.io ([0-9]+)/\1_\2/')
