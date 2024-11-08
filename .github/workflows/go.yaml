@@ -1,170 +1,49 @@
-# name: Go
-# on: [push]
-
-# permissions:
-#   id-token: write
-#   contents: read
-
-# jobs:
-#   test:
-#     runs-on: ubuntu-latest
-#     # container: golang:1.19
-#     steps:
-#       - name: set oauth env
-#         run: |
-#           echo "OAUTH_CLIENT_ID=${{ secrets.TAILSCALE_OAUTH_CLIENT_ID }}" >> $GITHUB_ENV
-#           echo "OAUTH_CLIENT_SECRET=${{ secrets.TAILSCALE_OAUTH_CLIENT_SECRET }}" >> $GITHUB_ENV    
-          
-#       - name: Connect to Tailscale
-#         uses: tailscale/github-action@v1
-#         with:
-#           authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
-
-#       - name: Tailscale status
-#         run: |
-#           tailscale netcheck
-#           tailscale status              
-        
-#       - name: Checkout
-#         uses: actions/checkout@v3
-        
-#       - name: Assume github action role
-#         uses: aws-actions/configure-aws-credentials@v1
-#         with:
-#           role-to-assume: "arn:aws:iam::320005014399:role/github-action"
-#           aws-region: us-east-1          
-          
-#       # should output the ARN of your instance role, if it's now being used
-#       - name: identity check
-#         shell: bash
-#         run: aws sts get-caller-identity          
-          
-#       - name: Assume vault-prod role
-#         uses: aws-actions/configure-aws-credentials@v1
-#         with:
-#           ### IMPORTANT: must pass over these three, otherwise doesn't work
-#           aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
-#           aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
-#           aws-session-token: ${{ env.AWS_SESSION_TOKEN }}
-#           role-to-assume: "arn:aws:iam::320005014399:role/vault-prod"
-#           # Need to disable since the parent role doesn't have permissions to tag
-#           role-skip-session-tagging: true
-#           # role duration need <= the default when creating role
-#           role-duration-seconds: 3600
-#           aws-region: us-east-1         
-          
-#       - name: identity check
-#         shell: bash
-#         run: aws sts get-caller-identity                              
-
-#       - name: set aws env
-#         run: |
-#           echo "AWS_ACCESS_KEY_ID=${{ env.AWS_ACCESS_KEY_ID }}" >> $GITHUB_ENV
-#           echo "AWS_SECRET_ACCESS_KEY=${{ env.AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV    
-#           echo "AWS_SESSION_TOKEN=${{ env.AWS_SESSION_TOKEN }}" >> $GITHUB_ENV
-#           echo "PERSONAL_VAULT_TOKEN=${{ secrets.PERSONAL_VAULT_TOKEN }}" >> $GITHUB_ENV   
-           
-#       - uses: actions/setup-go@v4
-#         with:
-#           go-version: '1.19'
-#           check-latest: true      
-          
-#       - run: go run main.go      
-
-name: "Job to test cron job"
-# on:
-#   workflow_dispatch:
-#     inputs:
-#       expiration_days:
-#         description: 'Auth key expiration days'
-#         default: "10"
-#         type: string  
-#   schedule:
-#     - cron: '30 10 */2 * *'
 
 on:
   push:
     branches:
-      - main
-    
-  # workflow_dispatch:
-  #   inputs:
-  #     expiration_days:
-  #       description: 'Set auth key expiration days'
-  #       default: 
-  #       type: string       
-  # schedule:
-  #   - cron: '* */5 * * *'        
+      - PE-test
+      
     
 jobs:
-  cronjob:
+  test-job:
     runs-on: ubuntu-latest
-    env:
-      EXPIRATION_DAYS: ${{ github.event.inputs.expiration_days || '90' }}   
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          ref: main        
-          
-          
-          
-
- 
- 
-            
-            
-            
-
-
-
-
-          
-          
-          
-          
-      # - name: Check if 'times' input exists
-      #   id: check_times_input
-      #   run: echo "::set-output name=times_input_exists::$(echo ${{ github.event.inputs.times != null }})"          
-          
-          
-      - name: Check TAILSCALE_AUTHKEY expiration days(at least 10 days)
+      - name: Echo github variables
+        id: get_ref
         run: |
-          if [[ $EXPIRATION_DAYS -lt 10 ]]; then
-            echo "Expiration day is less than 10. Throwing an error."
-            exit 1
-          else
-            echo "Expiration is greater than or equal to 10. Proceeding with the workflow."
-          fi          
+          output_file="final_result"
+          echo "brokers-dmx-prod-non-revenue-eks-2.kafka-us-east-1b.vungle.io 66" >> final_result
+          echo "brokers-dmx-prod-non-revenue-eks-3.kafka-us-east-1b.vungle.io 78" >> final_result
           
-      # - name: Define TAILSCALE_AUTHKEY expiration days(at least 10 days)
-      #   id: check-step
-      #   run: |
-      #     if [ -z "${{ inputs.expiration_days }}" ]; then
-      #       echo "Running with scheduled job, use default value"
-      #       echo "EXPIRATION_DAYS=90" >> $GITHUB_ENV
-      #       echo "UPDATE_THRESHOLD=5" >> $GITHUB_ENV     
-      #       echo "::set-output name=skip::skip-next-step"
-      #     fi  
-
-      # Add your desired steps here
-      # - name: Run your command or script
-      #   if: steps.check-step.outputs.skip != 'skip-next-step'
-      #   run: |
-      #     # Your command or script here
-      #     if [[ ${{ inputs.expiration_days }} -lt 10 ]]; then
-      #       echo "Expiration day is less than 10. Throwing an error."
-      #       exit 1
-      #     else
-      #       echo "Expiration is greater than or equal to 10. Proceeding with the workflow."
-      #     fi
-                    
-      #     echo "Running every 5 minutes"
-      #     echo  "The tags are ${{ inputs.expiration_days }} "
-      
-      - name: Send Slack notification
-        env:
-          SLACK_WEBHOOK_URL: "https://hooks.slack.com/services/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"
-          SLACK_CHANNEL: "#grafana-pe-alerts"
+          cat final_result
+          
+          file_content=""
+          while read -r line; do
+            #new_string=$(echo "$line" | sed -E 's/.*-([0-9]+)\.kafka-us-east-1b\.vungle\.io ([0-9]{1,3})$/\1_\2/')
+            modify=$(echo "$line" | sed -E 's/.*-([0-9]+)\.kafka-us-east-1b\.vungle\.io ([0-9]+)/\1_\2/')
+            file_content+="$modify"'\n'  # Append line and add a newline character
+          done < final_result
+          
+          
+          echo $file_content
+          echo "content=$file_content" >> $GITHUB_ENV
+          
+      # To be continue for run ANsible script  
+      - name: Run Ansible playbook
         run: |
-          curl -X POST -H 'Content-type: application/json' --data '{"text":"This is a test notification from GitHub Actions. Just ignore it"}' $SLACK_WEBHOOK_URL      
+          # echo "${{ env.content }}"
+          echo -e "${{ env.content }}" | while read -r line; do
+            # Use sed to extract the two parts and echo them separately
+            first_part=$(echo "$line" | sed -E 's/^([0-9]+)_.*/\1/')
+            second_part=$(echo "$line" | sed -E 's/^[0-9]+_(.*)/\1/')
+            
+            # Echo the parts separately
+            if [[ -n "$first_part" ]]; then
+              echo "First part: $first_part"
+              echo "Second part: $second_part"
+              together="$first_part"'_part_hello'"$second_part"'_part123'
+              echo "$together"
+            fi
+          done
+       
