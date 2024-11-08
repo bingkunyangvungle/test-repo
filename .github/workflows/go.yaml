@@ -85,7 +85,7 @@ name: "Job to test cron job"
 on:
   push:
     branches:
-      - origin/PE-test
+      - PE-test
     
   # workflow_dispatch:
   #   inputs:
@@ -97,13 +97,9 @@ on:
   #   - cron: '* */5 * * *'        
     
 jobs:
-  cronjob:
+  test-job:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          ref: main
       - name: Echo github variables
         id: get_ref
         run: |
