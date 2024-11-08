@@ -85,7 +85,7 @@ name: "Job to test cron job"
 on:
   push:
     branches:
-      - main
+      - origin/PE-test
     
   # workflow_dispatch:
   #   inputs:
@@ -99,16 +99,20 @@ on:
 jobs:
   cronjob:
     runs-on: ubuntu-latest
-    env:
-      EXPIRATION_DAYS: ${{ github.event.inputs.expiration_days || '90' }}   
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
         with:
-          ref: main        
-            
+          ref: main
+      - name: Echo github variables
+        id: get_ref
+        run: |
+          echo "content=brokers-dmx-prod-non-revenue-eks-2.kafka-us-east-1b.vungle.io 66" >> $GITHUB_OUTPUT
           
-          
+      # To be continue for run ANsible script  
+      - name: Run Ansible playbook
+        run: |
+          echo "${{ steps.get_ref.outputs.* }}"
   
  
  
