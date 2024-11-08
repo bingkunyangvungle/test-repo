@@ -41,7 +41,9 @@ jobs:
             second_part=$(echo "$line" | sed -E 's/^[0-9]+_(.*)/\1/')
             
             # Echo the parts separately
-            echo "First part: $first_part"
-            echo "Second part: $second_part"
+            if [[ -n "$first_part" ]]; then
+              echo "First part: $first_part"
+              echo "Second part: $second_part"
+            fi
           done
        
