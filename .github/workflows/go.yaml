@@ -28,7 +28,6 @@ jobs:
           
           echo $file_content
           echo "content=$file_content" >> $GITHUB_ENV
-          echo 'EOF' >> $GITHUB_OUTPUT
           
       # To be continue for run ANsible script  
       - name: Run Ansible playbook
