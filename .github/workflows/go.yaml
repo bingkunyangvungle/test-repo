@@ -44,6 +44,7 @@ jobs:
               echo "First part: $first_part"
               echo "Second part: $second_part"
               together="$first_part_hello$second_part123"
+              echo "$together"
             fi
           done
        
