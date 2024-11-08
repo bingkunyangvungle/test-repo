@@ -20,7 +20,8 @@ jobs:
           
           file_content=""
           while read -r line; do
-            modify=$(echo "$line" | sed 's/ /::/')
+            #new_string=$(echo "$line" | sed -E 's/.*-([0-9]+)\.kafka-us-east-1b\.vungle\.io ([0-9]{1,3})$/\1_\2/')
+            modify=$(echo "$line" | sed -E 's/.*-([0-9]+)\.kafka-us-east-1b\.vungle\.io ([0-9]+)/\1_\2/')
             file_content+="$modify"$'\n'  # Append line and add a newline character
           done < final_result
           
