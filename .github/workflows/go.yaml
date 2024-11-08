@@ -12,8 +12,15 @@ jobs:
       - name: Echo github variables
         id: get_ref
         run: |
-          echo "brokers-dmx-prod-non-revenue-eks-2.kafka-us-east-1b.vungle.io 66\nbrokers-dmx-prod-non-revenue-eks-3.kafka-us-east-1b.vungle.io 78" >> final_result
-          echo "content=$(cat final_result)" >> $GITHUB_OUTPUT
+          echo "brokers-dmx-prod-non-revenue-eks-2.kafka-us-east-1b.vungle.io 66" >> final_result
+          echo "brokers-dmx-prod-non-revenue-eks-3.kafka-us-east-1b.vungle.io 78" >> final_result
+          
+          file_content=""
+          while read -r line; do
+            file_content+="\$line"\$'\n'  # Append line and add a newline character
+          done < final_result
+          
+          echo "content=\$file_content" >> $GITHUB_OUTPUT
           
       # To be continue for run ANsible script  
       - name: Run Ansible playbook
