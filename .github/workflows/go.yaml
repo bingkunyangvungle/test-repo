@@ -36,6 +36,6 @@ jobs:
         run: |
           for content in "${{ steps.get_ref.outputs.* }}"
           do
-            echo content
+            echo $content
           done
        
